@@ -1,0 +1,14 @@
+{
+    "name": "node-red-contrib",
+    "version": "0.0.1",
+    "description": "Simple Ndoe",
+    "dependencies": {},
+    "keywords": [
+        "node-red"
+    ],
+    "node-red": {
+        "nodes": {
+            "nodes": "nodes/nodes.js"
+        }
+    }
+}

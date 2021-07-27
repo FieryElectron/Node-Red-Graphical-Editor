@@ -1,0 +1,1054 @@
+<script type="text/javascript">
+
+    function getRandomColor() {
+        return '#' + Math.round(Math.random() * 0xFFFFFF).toString(16).padStart(6, '0');
+    }
+
+    var colorCount = 0;
+    var colorStep = 10;
+
+    var colorDataCount = 110;
+    var colorDataStep = 10;
+
+    var colorOperateCount = 110;
+    var colorOperateStep = 5;
+
+    var colorFuncCount = 110;
+    var colorFuncStep = 10;
+
+    function getColor() {
+        var colorHex = colorCount.toString(16).padStart(2, '0');
+        colorCount += colorStep;
+        return '#' + (colorHex+"CC"+colorHex);
+    }
+
+    function getDataColor() {
+        var colorHex = colorDataCount.toString(16).padStart(2, '0');
+        colorDataCount += colorDataStep;
+        return '#' + (colorHex+"CC"+colorHex);
+    }
+
+    function getOperateColor() {
+        var colorHex = colorOperateCount.toString(16).padStart(2, '0');
+        colorOperateCount += colorOperateStep;
+        return '#' + (colorHex+colorHex+"CC");
+    }
+
+    function getFuncColor() {
+        var colorHex = colorFuncCount.toString(16).padStart(2, '0');
+        colorFuncCount += colorFuncStep;
+        return '#' + ("CC"+colorHex+colorHex);
+    }
+
+    RED.nodes.registerType('input', {
+        category: 'www3',
+        color: getDataColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "input.png",
+        defaults: {
+            datapoint: {
+                value: "AIN1.val"
+            },
+            ctype: {
+                value: "int"
+            }
+        },
+        label: function () {
+            // return this.datapoint + " [" + this.ctype + "]";
+            return this.datapoint;
+        }
+    });
+
+    RED.nodes.registerType('output', {
+        category: 'www3',
+        color: getDataColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "output.png",
+        defaults: {
+            datapoint: {
+                value: "AOT1.val"
+            },
+            ctype: {
+                value: "int"
+            }
+        },
+        label: function () {
+            // return this.datapoint + " [" + this.ctype + "]";
+            return this.datapoint;
+        }
+    });
+
+    RED.nodes.registerType('variable', {
+        category: 'www3',
+        color: getDataColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "variable.png",
+        defaults: {
+            datapoint: {
+                value: "M1.val"
+            },
+            ctype: {
+                value: "int"
+            }
+        },
+        label: function () {
+            // return this.datapoint + " [" + this.ctype + "]";
+            return this.datapoint;
+        }
+    });
+
+    RED.nodes.registerType('constant', {
+        category: 'www3',
+        color: getDataColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "constant.png",
+        defaults: {
+            cvalue: {
+                value: "0"
+            },
+            ctype: {
+                value: "int"
+            }
+        },
+        label: function () {
+            // return this.cvalue + " [" + this.ctype + "]";
+            return this.cvalue;
+        }
+    });
+
+    RED.nodes.registerType('operator', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "set.png",
+        defaults: {
+            operator: {
+                value: "+"
+            },
+        },
+        label: function () {
+            return "operator ["+this.operator+"]";
+        }
+    });
+
+    RED.nodes.registerType('set', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "set.png",
+        defaults: {
+        },
+        label: function () {
+            return "[IN] set [OUT]";
+        }
+    });
+
+    RED.nodes.registerType('compare', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "compare.png",
+        defaults: {
+        },
+        label: function () {
+            return "compare";
+        }
+    });
+
+    RED.nodes.registerType('not', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "not.png",
+        defaults: {
+        },
+        label: function () {
+            return "not";
+        }
+    });
+
+    RED.nodes.registerType('and', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "and.png",
+        defaults: {
+            cinputs: {
+                value: "2"
+            },
+        },
+        label: function () {
+            return "and" + " <"+this.cinputs+">";
+        }
+    });
+
+    RED.nodes.registerType('or', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "or.png",
+        defaults: {
+            cinputs: {
+                value: "2"
+            },
+        },
+        label: function () {
+            return "or" + " <"+this.cinputs+">";
+        }
+    });
+
+    RED.nodes.registerType('nand', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "nand.png",
+        defaults: {
+            cinputs: {
+                value: "2"
+            },
+        },
+        label: function () {
+            return "nand" + " <"+this.cinputs+">";
+        }
+    });
+
+    RED.nodes.registerType('nor', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "nor.png",
+        defaults: {
+            cinputs: {
+                value: "2"
+            },
+        },
+        label: function () {
+            return "nor" + " <"+this.cinputs+">";
+        }
+    });
+
+    RED.nodes.registerType('xor', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "xor.png",
+        defaults: {
+            cinputs: {
+                value: "2"
+            },
+        },
+        label: function () {
+            return "xor" + " <"+this.cinputs+">";
+        }
+    });
+
+    RED.nodes.registerType('cif', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "cif.png",
+        defaults: {
+        },
+        label: function () {
+            return "cif";
+        }
+    });
+
+    RED.nodes.registerType('celse', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "celse.png",
+        defaults: {
+        },
+        label: function () {
+            return "celse";
+        }
+    });
+
+    RED.nodes.registerType('celseif', {
+        category: 'www3',
+        color: getOperateColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "celseif.png",
+        defaults: {
+        },
+        label: function () {
+            return "celseif";
+        }
+    });
+
+    RED.nodes.registerType('ondelay', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "ondelay.png",
+        defaults: {
+            datapoint: {
+                value: "AIN1"
+            },
+            time: {
+                value: "1"
+            },
+        },
+        label: function () {
+            return "ondelay";
+        }
+    });
+
+    RED.nodes.registerType('offdelay', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "offdelay.png",
+        defaults: {
+            datapoint: {
+                value: "AIN1"
+            },
+            time: {
+                value: "1"
+            },
+        },
+        label: function () {
+            return "offdelay";
+        }
+    });
+
+    RED.nodes.registerType('on_offdelay', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "on_offdelay.png",
+        defaults: {
+            datapoint: {
+                value: "AIN1"
+            },
+            time: {
+                value: "1"
+            },
+        },
+        label: function () {
+            return "on_offdelay";
+        }
+    });
+
+    RED.nodes.registerType('toggle', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "toggle.png",
+        defaults: {
+            datapoint: {
+                value: "AIN1"
+            },
+            datapoint1: {
+                value: "AIN2"
+            },
+        },
+        label: function () {
+            return "toggle";
+        }
+    });
+
+    RED.nodes.registerType('pulse', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "pulse.png",
+        defaults: {
+            datapoint: {
+                value: "AIN1"
+            },
+            time: {
+                value: "1"
+            },
+        },
+        label: function () {
+            return "pulse";
+        }
+    });
+
+    RED.nodes.registerType('impuls', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "impuls.png",
+        defaults: {
+            level: {
+                value: "hi"
+            },
+            timeon: {
+                value: "1"
+            },
+            timeoff: {
+                value: "2"
+            },
+        },
+        label: function () {
+            return "impuls";
+        }
+    });
+
+    RED.nodes.registerType('tagesuhr', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "tagesuhr.png",
+        defaults: {
+            ontime: {
+                value: "07:10:00"
+            },
+            offtime: {
+                value: "20:55:00"
+            }
+        },
+        label: function () {
+            return "tagesuhr";
+        }
+    });
+
+    RED.nodes.registerType('wochenuhr', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "wochenuhr.png",
+        defaults: {
+            ontime: {
+                value: "07:10:00"
+            },
+            offtime: {
+                value: "20:55:00"
+            },
+            onday: {
+                value: "0"
+            },
+            offday: {
+                value: "4"
+            }
+        },
+        label: function () {
+            return "wochenuhr";
+        }
+    });
+
+    RED.nodes.registerType('jahresuhr', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "jahresuhr.png",
+        defaults: {
+            date: {
+                value: "19.01.2009"
+            },
+            ontime: {
+                value: "07:10:00"
+            },
+            offtime: {
+                value: "20:55:00"
+            },
+            onday: {
+                value: "0"
+            },
+            offday: {
+                value: "4"
+            }
+        },
+        label: function () {
+            return "jahresuhr";
+        }
+    });
+
+    RED.nodes.registerType('cjoin', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "cjoin.png",
+        defaults: {
+            cinputs: {
+                value: "2"
+            },
+        },
+        label: function () {
+            return "cjoin" + " <"+this.cinputs+">";
+        }
+    });
+
+    RED.nodes.registerType('ccode', {
+        category: 'www3',
+        color: getFuncColor(),
+        inputs: 1,
+        outputs: 1,
+        icon: "ccode.png",
+        defaults: {
+            cpriority: {
+                value: "0"
+            },
+        },
+        label: function () {
+            return "ccode " +"<"+this.cpriority+">";
+        }
+    });
+
+</script>
+
+<script type="text/x-red" data-template-name="input">
+    <form>
+        <div class="form-row">
+            <label for="node-input-datapoint">datapoint</span></label>
+            <select id="node-input-datapoint">
+                <option value="AIN1.val">AIN1</option>
+                <option value="AIN2.val">AIN2</option>
+                <option value="AIN3.val">AIN3</option>
+                <option value="AIN4.val">AIN4</option>
+                <option value="AIN5.val">AIN5</option>
+                <option value="AIN6.val">AIN6</option>
+                <option value="AIN7.val">AIN7</option>
+                <option value="AIN8.val">AIN8</option>
+                <option value="AIN9.val">AIN9</option>
+              </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-ctype">ctype</span></label>
+            <select id="node-input-ctype">
+                <option value="char">char</option>
+                <option value="uchar">uchar</option>
+                <option value="short">short</option>
+                <option value="ushort">ushort</option>
+                <option value="int">int</option>
+                <option value="uint">uint</option>
+                <option value="long">long</option>
+                <option value="ulong">ulong</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="output">
+    <form>
+        <div class="form-row">
+            <label for="node-input-datapoint">datapoint</span></label>
+            <select id="node-input-datapoint">
+                <option value="AOT1.val">AOT1</option>
+                <option value="AOT2.val">AOT2</option>
+                <option value="AOT3.val">AOT3</option>
+                <option value="AOT4.val">AOT4</option>
+                <option value="DOT1.val">DOT1</option>
+                <option value="DOT2.val">DOT2</option>
+                <option value="DOT3.val">DOT3</option>
+                <option value="DOT4.val">DOT4</option>
+                <option value="DOT5.val">DOT5</option>
+                <option value="DOT6.val">DOT6</option>
+                <option value="DOT7.val">DOT7</option>
+                <option value="DOT8.val">DOT8</option>
+                <option value="DOT9.val">DOT9</option>
+                <option value="DOT10.val">DOT10</option>
+                <option value="DOT11.val">DOT11</option>
+                <option value="DOT12.val">DOT12</option>
+                <option value="DOT13.val">DOT13</option>
+                <option value="DOT14.val">DOT14</option>
+                <option value="DOT15.val">DOT15</option>
+                <option value="DOT16.val">DOT16</option>
+              </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-ctype">ctype</span></label>
+            <select id="node-input-ctype">
+                <option value="char">char</option>
+                <option value="uchar">uchar</option>
+                <option value="short">short</option>
+                <option value="ushort">ushort</option>
+                <option value="int">int</option>
+                <option value="uint">uint</option>
+                <option value="long">long</option>
+                <option value="ulong">ulong</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="variable">
+    <form>
+        <div class="form-row">
+            <label for="node-input-datapoint">datapoint</span></label>
+            <select id="node-input-datapoint">
+                <option value="M1.val">M1</option>
+                <option value="M2.val">M2</option>
+                <option value="M3.val">M3</option>
+                <option value="M4.val">M4</option>
+              </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-ctype">ctype</span></label>
+            <select id="node-input-ctype">
+                <option value="char">char</option>
+                <option value="uchar">uchar</option>
+                <option value="short">short</option>
+                <option value="ushort">ushort</option>
+                <option value="int">int</option>
+                <option value="uint">uint</option>
+                <option value="long">long</option>
+                <option value="ulong">ulong</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="constant">
+    <form>
+        <div class="form-row">
+            <label for="node-input-cvalue">cvalue</span></label>
+            <input id="node-input-cvalue" type="number"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-ctype">ctype</span></label>
+            <select id="node-input-ctype">
+                <option value="char">char</option>
+                <option value="uchar">uchar</option>
+                <option value="short">short</option>
+                <option value="ushort">ushort</option>
+                <option value="int">int</option>
+                <option value="uint">uint</option>
+                <option value="long">long</option>
+                <option value="ulong">ulong</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="operator">
+    <form>
+        <div class="form-row">
+            <label for="node-input-operator">operator</span></label>
+            <select id="node-input-operator">
+                <option value="+">+</option>
+                <option value="-">-</option>
+                <option value="*">*</option>
+                <option value="/">/</option>
+                <option value="%">%</option>
+                <option value=">">></option>
+                <option value="<"><</option>
+                <option value="<=">>=</option>
+                <option value="<="><=</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="set">
+</script>
+
+<script type="text/x-red" data-template-name="compare">
+</script>
+
+<script type="text/x-red" data-template-name="not">
+</script>
+
+<script type="text/x-red" data-template-name="and">
+    <form>
+        <div class="form-row">
+            <label for="node-input-cinputs">cinputs</span></label>
+            <select id="node-input-cinputs">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="or">
+    <form>
+        <div class="form-row">
+            <label for="node-input-cinputs">cinputs</span></label>
+            <select id="node-input-cinputs">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="nand">
+    <form>
+        <div class="form-row">
+            <label for="node-input-cinputs">cinputs</span></label>
+            <select id="node-input-cinputs">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="nor">
+    <form>
+        <div class="form-row">
+            <label for="node-input-cinputs">cinputs</span></label>
+            <select id="node-input-cinputs">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="xor">
+    <form>
+        <div class="form-row">
+            <label for="node-input-cinputs">cinputs</span></label>
+            <select id="node-input-cinputs">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="cif">
+</script>
+
+<script type="text/x-red" data-template-name="celse">
+</script>
+
+<script type="text/x-red" data-template-name="celseif">
+</script>
+
+<script type="text/x-red" data-template-name="ondelay">
+    <form>
+        <div class="form-row">
+            <label for="node-input-datapoint">datapoint</span></label>
+            <select id="node-input-datapoint">
+                <option value="AIN1">AIN1</option>
+                <option value="AIN2">AIN2</option>
+              </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-time">time</span></label>
+            <input id="node-input-time" type="number"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="offdelay">
+    <form>
+        <div class="form-row">
+            <label for="node-input-datapoint">datapoint</span></label>
+            <select id="node-input-datapoint">
+                <option value="AIN1">AIN1</option>
+                <option value="AIN2">AIN2</option>
+              </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-time">time</span></label>
+            <input id="node-input-time" type="number"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="on_offdelay">
+    <form>
+        <div class="form-row">
+            <label for="node-input-datapoint">datapoint</span></label>
+            <select id="node-input-datapoint">
+                <option value="AIN1">AIN1</option>
+                <option value="AIN2">AIN2</option>
+              </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-time">time</span></label>
+            <input id="node-input-time" type="number"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="toggle">
+    <form>
+        <div class="form-row">
+            <label for="node-input-datapoint">datapoint</span></label>
+            <select id="node-input-datapoint">
+                <option value="AIN1">AIN1</option>
+                <option value="AIN2">AIN2</option>
+              </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-datapoint1">datapoint1</span></label>
+            <select id="node-input-datapoint1">
+                <option value="AIN1">AIN1</option>
+                <option value="AIN2">AIN2</option>
+              </select>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="pulse">
+    <form>
+        <div class="form-row">
+            <label for="node-input-datapoint">datapoint</span></label>
+            <select id="node-input-datapoint">
+                <option value="AIN1">AIN1</option>
+                <option value="AIN2">AIN2</option>
+              </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-time">time</span></label>
+            <input id="node-input-time" type="number"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="impuls">
+    <form>
+        <div class="form-row">
+            <label for="node-input-level">level</span></label>
+            <select id="node-input-level">
+                <option value="hi">hi</option>
+                <option value="lo">lo</option>
+              </select>
+        </div>
+        <div class="form-row">
+            <label for="node-input-timeon">timeon</span></label>
+            <input id="node-input-timeon" type="number"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-timeoff">timeoff</span></label>
+            <input id="node-input-timeoff" type="number"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="tagesuhr">
+    <form>
+        <div class="form-row">
+            <label for="node-input-ontime">ontime</span></label>
+            <input id="node-input-ontime" type="text"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-offtime">offtime</span></label>
+            <input id="node-input-offtime" type="text"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="wochenuhr">
+    <form>
+        <div class="form-row">
+            <label for="node-input-ontime">ontime</span></label>
+            <input id="node-input-ontime" type="text"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-offtime">offtime</span></label>
+            <input id="node-input-offtime" type="text"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-onday">onday</span></label>
+            <input id="node-input-onday" type="text"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-offday">offday</span></label>
+            <input id="node-input-offday" type="text"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="jahresuhr">
+    <form>
+        <div class="form-row">
+            <label for="node-input-date">date</span></label>
+            <input id="node-input-date" type="text"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-ontime">ontime</span></label>
+            <input id="node-input-ontime" type="text"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-offtime">offtime</span></label>
+            <input id="node-input-offtime" type="text"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-onday">onday</span></label>
+            <input id="node-input-onday" type="text"></input>
+        </div>
+        <div class="form-row">
+            <label for="node-input-offday">offday</span></label>
+            <input id="node-input-offday" type="text"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="cjoin">
+    <form>
+        <div class="form-row">
+            <label for="node-input-cinputs">cinputs</span></label>
+            <input id="node-input-cinputs" type="number"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-template-name="ccode">
+    <form>
+        <div class="form-row">
+            <label for="node-input-cpriority">cpriority</span></label>
+            <input id="node-input-cpriority" type="number"></input>
+        </div>
+    </form>
+</script>
+
+<script type="text/x-red" data-help-name="input">
+    <p>input<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="output">
+    <p>output<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="variable">
+    <p>variable<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="constant">
+    <p>constant<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="operator">
+    <p>operator<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="set">
+    <p>set<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="compare">
+    <p>compare<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="not">
+    <p>not<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="and">
+    <p>and<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="or">
+    <p>or<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="nand">
+    <p>nand<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="nor">
+    <p>nor<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="xor">
+    <p>xor<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="cif">
+    <p>cif<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="celse">
+    <p>celse<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="celseif">
+    <p>celseif<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="ondelay">
+    <p>ondelay<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="offdelay">
+    <p>offdelay<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="on_offdelay">
+    <p>on_offdelay<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="toggle">
+    <p>toggle<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="pulse">
+    <p>pulse<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="impuls">
+    <p>impuls<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="tagesuhr">
+    <p>tagesuhr<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="wochenuhr">
+    <p>wochenuhr<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="jahresuhr">
+    <p>jahresuhr<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="cjoin">
+    <p>cjoin<br/></p>
+</script>
+
+<script type="text/x-red" data-help-name="ccode">
+    <p>ccode<br/></p>
+</script>
+
+
